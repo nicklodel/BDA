@@ -43,7 +43,7 @@ function App() {
   return (
     
     <div>
-      <table>
+      <table class='styled-table'>
   <tr>
     <th>idatracción</th>
     <th>nombre</th>
