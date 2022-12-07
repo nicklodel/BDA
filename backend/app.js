@@ -11,7 +11,8 @@ const port = process.env.PORT || 5000;
 app.use(express.urlencoded({extended: true })); // New
 // Parse application/json
 // app.use(bodyParser.json()); // Remove
-app.use(express.json()); // New
+app.use(express.json()); 
+app.use(bodyParser.json())// New
 app.use(cors());
 // MySQL Code goes here
 const pool = mysql.createConnection({
@@ -54,15 +55,31 @@ app.get('/:id', (req,res) => {
 
 app.post('/post',(req,res) => {
     const params = req.body
-    pool.query('insert into atracciones set ?',params,(err,rows) =>{
+    console.log(params)
+    const values = [params.idatraccion,params.nombre,params.aforo,params.edadrecomendada,params.duracionmin]
+    pool.query('insert into atracciones values (?)',[values],(err,rows) =>{
         
         if (!err) {
-            res.send('La atracción se ha borrado')
+            res.send('La atracción se ha insertado')
         } else {
             console.log(err)
         }
     })
     })
+
+app.put('/put',(req,res) => {
+    const {idatraccion,nombre,aforo,edadrecomendada,duracionmin} = req.body
+    console.log(req.body)
+    pool.query('update atracciones set nombre = ?, aforo = ?, edadrecomendada = ?, duracionmin = ? where idatraccion = ?',[nombre,parseInt(aforo),parseInt(edadrecomendada),parseInt(duracionmin),parseInt(idatraccion)],(err,rows) => {
+       
+        
+        if (!err) {
+            res.send('La atracción se ha insertado')
+        } else {
+            console.log(err)
+        }
+    })
+})
 // Listen on enviroment port or 5000
 
 app.listen(port, () => console.log(`Listening on port ${port}`))

@@ -1,9 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect,useState } from 'react'
 import Axios from 'axios'
-function Form (){
- 
+function Edit (){
+    const [backendData,setBackendData] = useState([{}])
+    const Items = [];
+    
+    useEffect(() =>{
+      fetch("http://localhost:5000/atracciones", {mode:'cors'}).then(
+        response => response.json()
+      ).then(
+        data =>{
+          setBackendData(data)
+        }
+      )
+    })
+    
+    const map = new Map(Object.entries(backendData));
+    map.forEach(call)
 
-  const [data,setData] = useState({
+    function call(value,key,map){
+        Items.push(
+          
+          <option value={value['idatraccion']}>{value['idatraccion']}</option>
+          )}
+
+  
+  
+  
+    const [data,setData] = useState({
         idatraccion: 0,
           nombre: "",
           aforo: 0,
@@ -18,9 +41,9 @@ function Form (){
     console.log(newdata)
   }
   
-  function submit(e){
+  function submitPut(e){
     e.preventDefault();
-    Axios.post("http://localhost:5000/post",{
+    Axios.put("http://localhost:5000/put",{
       idatraccion: data.idatraccion,
       nombre: data.nombre,
       aforo: data.aforo,
@@ -34,16 +57,13 @@ function Form (){
 
   return (
     <div className="App">
-      <form onSubmit={(e) => submit(e)}>
+      <form onSubmit={(e) => submitPut(e)}>
         <label>Id Atracción</label>
         <br />
-        <input
-          type="number"
-          id="idatraccion"
-          value={data.idatraccion}
-          placeholder="idatraccion"
-          onChange={(e) => handle(e)}
-        /> 
+        <select value={data.idatraccion} id='idatraccion'onChange= {(e) =>handle(e)}>
+            <option value='-'>-</option>
+            {Items}
+        </select>
         <br /> 
         <label>Nombre</label>
         <br />
@@ -86,9 +106,10 @@ function Form (){
         />
 
         <button type="submit">Añadir</button>
+        <br />
       </form>
     </div>
   );
 }
  
-export default Form;
+export default Edit;

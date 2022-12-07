@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Link } from "react-router-dom";
 import './App.css'
 
 function App() {
+
   async function deleteItem(id) {
     await fetch("http://localhost:5000/" + id, {mode:'cors'})
   }
