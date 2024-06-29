@@ -17,10 +17,10 @@ app.use(cors());
 // MySQL Code goes here
 const pool = mysql.createConnection({
     connectionLimit : 10,
-    host: '',
-    user: '',
-    password: '',
-    database: ''
+    host: 'localhost',
+    user: 'root',
+    password: 'Nicklodel01?',
+    database: 'BDA'
 })
 
 // Get all beers
