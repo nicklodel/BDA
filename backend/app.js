@@ -4,7 +4,29 @@ const mysql = require('mysql')
 const cors = require('cors')
 const app = express()
 const port = process.env.PORT || 5000;
+const {RateLimiterMemory} = require('rate-limiter-flexible');
 
+const rateLimiter = new RateLimiterMemory({
+points: 100,
+duration: 15*60,
+blockDuration: 15*60
+});
+
+const rateLimiterMiddleware = (req,res,next) => {
+    rateLimiter.consume(req.ip)
+    .then(() => {
+        next();
+    })
+
+    .catch(() =>{
+        res.status(429).send('Demasiadas peticiones, inténtalo más tarde')
+    });
+};
+
+app.use("/atracciones", rateLimiterMiddleware);
+app.use('/:id',rateLimiterMiddleware);
+app.use('/post',rateLimiterMiddleware);
+app.use('/put',rateLimiterMiddleware);
 // Parsing middleware
 // Parse application/x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({ extended: false })); // Remove 
@@ -17,10 +39,10 @@ app.use(cors());
 // MySQL Code goes here
 const pool = mysql.createConnection({
     connectionLimit : 10,
-    host: '',
-    user: '',
-    password: '',
-    database: ''
+    host: 'localhost',
+    user: 'root',
+    password: 'Nicklodel01?',
+    database: 'BDA'
 })
 
 // Get all beers
